@@ -14,20 +14,22 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.pallav.androidjetpack.R;
 import com.pallav.androidjetpack.model.PersonModel;
+import com.pallav.androidjetpack.model.PersonObj;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonListAdapter  extends RecyclerView.Adapter<PersonListAdapter.MyViewHolder> {
-    private Context context;
-    private List<PersonModel> personlist;
-    public PersonListAdapter( Context context,List<PersonModel> personlist) {
+     Context context;
+     List<PersonObj> personlist = new ArrayList<>();
+        public PersonListAdapter( Context context) {
             this.context = context;
-            this.personlist = personlist;
+
     }
 
-    public void setPersonlist(List<PersonModel> personlist)
+    public void setPersonlist(List<PersonObj> personlist)
     {
         this.personlist = personlist;
         notifyDataSetChanged();
@@ -46,7 +48,7 @@ public class PersonListAdapter  extends RecyclerView.Adapter<PersonListAdapter.M
     @Override
     public void onBindViewHolder(@NonNull @NotNull PersonListAdapter.MyViewHolder holder, int position) {
             holder.tvTitle.setText(this.personlist.get(position).getFirstname().toString());
-        Glide.with(context)
+                Glide.with(context)
                 .load(this.personlist.get(position).getPicture())
                 .apply(RequestOptions.centerCropTransform())
                 .into(holder.imageView);
@@ -63,8 +65,8 @@ public class PersonListAdapter  extends RecyclerView.Adapter<PersonListAdapter.M
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
             TextView tvTitle;
-                    ImageView imageView;
-        public MyViewHolder(View itemView) {
+             ImageView imageView;
+           public MyViewHolder(View itemView) {
             super(itemView);
 
             tvTitle = (TextView)itemView.findViewById(R.id.titleView);
@@ -73,4 +75,11 @@ public class PersonListAdapter  extends RecyclerView.Adapter<PersonListAdapter.M
         }
 
     }
+
+    public void update(ArrayList<PersonObj> newItems) {
+       personlist.clear();
+        personlist.addAll(newItems);
+        notifyDataSetChanged();
+    }
+
 }

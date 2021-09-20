@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetroInstance {
 
-    public static String BaseUrl = "https://dummyapi.io/data";
+    public static String BaseUrl = "https://dummyapi.io/data/v1/";
 
     private static Retrofit retrofit;
 

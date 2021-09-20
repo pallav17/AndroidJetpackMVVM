@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pallav.androidjetpack.adapter.PersonListAdapter;
 import com.pallav.androidjetpack.model.PersonModel;
+import com.pallav.androidjetpack.model.PersonObj;
 import com.pallav.androidjetpack.viewmodel.PersonListViewModel;
 
 import java.util.List;
@@ -22,10 +23,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity  {
     private RecyclerView recyclerView;
     private PersonListAdapter personListAdapter;
-    private List<PersonModel> personModelList;
+    private List<PersonObj> personObj;
     private PersonListViewModel viewModel;
 
-
+  //  PersonModel personModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,30 +36,44 @@ public class MainActivity extends AppCompatActivity  {
 
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        LinearLayoutManager layoutManager = new GridLayoutManager(this,2); // beacuse Grid with 2 columns
+       LinearLayoutManager layoutManager = new GridLayoutManager(this, 2); // beacuse Grid with 2 columns
 
-        recyclerView.setLayoutManager(layoutManager);
-       personListAdapter = new PersonListAdapter(this,personModelList);
-
-       recyclerView.setAdapter(personListAdapter);
-
-        viewModel = ViewModelProviders.of(this).get(PersonListViewModel.class);
-        viewModel.getPersonListObsever().observe(this, new Observer<List<PersonModel>>() {
+        viewModel = new PersonListViewModel();
+        viewModel.makeApiCall();
+        viewModel.setStateUpdateListener(new PersonListViewModel.UpdateListener() {
+            @Override
+            public void onUpdate(PersonModel state) {
+                personListAdapter.update(state.getPersonlist());
+            }
 
             @Override
-            public void onChanged(List<PersonModel> personModels) {
-                if(personModels != null) {
-                   personModelList = personModels;
-                  personListAdapter.setPersonlist(personModels);
+            public void onFailure(Exception e) {
 
+            }
+        });
+
+        recyclerView.setLayoutManager(layoutManager);
+        personListAdapter = new PersonListAdapter(this);
+        recyclerView.setAdapter(personListAdapter);
+
+
+
+        /*viewModel = ViewModelProviders.of(this).get(PersonListViewModel.class);
+        viewModel.getPersonListObsever().observe(this, new Observer<PersonModel>() {
+            @Override
+            public void onChanged(PersonModel personModel) {
+
+                if (personModel.data != null) {
+                    //personModelList = personModels;
+                    personListAdapter.setPersonlist(personModel.getPersonlist());
                 } else {
                     Toast.makeText(MainActivity.this, "No result found", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-        viewModel.makeApiCall();
+
+
+        });*/
+
+
     }
-
-
-
 }

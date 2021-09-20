@@ -1,28 +1,56 @@
 package com.pallav.androidjetpack.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+
 import com.pallav.androidjetpack.model.PersonModel;
+import com.pallav.androidjetpack.model.PersonObj;
 import com.pallav.androidjetpack.network.APIService;
 import com.pallav.androidjetpack.network.RetroInstance;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
-public class PersonListViewModel extends ViewModel {
 
-    private MutableLiveData<List<PersonModel>> personList;
-    public PersonListViewModel() {
+public class PersonListViewModel  {
+
+    ArrayList<PersonObj> arrayList;
+        /*public MutableLiveData<PersonModel> personList;
+
+         public PersonListViewModel() {
             personList = new MutableLiveData<>();
     }
+            public MutableLiveData<PersonModel> getPersonListObsever(){
+            return personList;*/
+    public interface UpdateListener {
 
-    public MutableLiveData<List<PersonModel>> getPersonListObsever(){
-        return personList;
+        public void onUpdate(PersonModel state);
+        public void onFailure(Exception e);
+
+    }
+
+   PersonModel personModel;
+    UpdateListener listener;
+
+    public PersonListViewModel() {
+
+        arrayList = new ArrayList<>();
+        //  itemListViewState = new ItemListViewState("Delivery Items", items);
+
+       personModel = new PersonModel(arrayList);
+
+    }
+
+    public void setStateUpdateListener(UpdateListener listener) {
+
+        this.listener = listener;
+        // listener.onUpdate(itemListViewState);
 
     }
 
@@ -30,17 +58,23 @@ public class PersonListViewModel extends ViewModel {
 
       APIService apiService = RetroInstance.getRetrofitClient().create(APIService.class);
 
-        Call<List<PersonModel>> call  = apiService.getPersonList();
-        call.enqueue(new Callback<List<PersonModel>>() {
+        Call<PersonModel> personResponse  = apiService.getPersonList();
+
+        personResponse.enqueue(new Callback<PersonModel>() {
             @Override
-            public void onResponse(Call<List<PersonModel>> call, Response<List<PersonModel>> response) {
-                personList.postValue(response.body());
+            public void onResponse(Call<PersonModel> call, Response<PersonModel> response) {
+               // Log.d("This is response","Person Response"+response.body().getPersonlist());
+          // personList.postValue(response.body());
+               personModel.setPersonlist(response.body().getPersonlist());
+                listener.onUpdate(personModel);
             }
 
             @Override
-            public void onFailure(Call<List<PersonModel>> call, Throwable t) {
-                personList.postValue(null);
+            public void onFailure(Call<PersonModel> call, Throwable t) {
+                Log.d("This is response for failure","Person Response"+t.getMessage());
+                //personList.postValue(null);
             }
         });
+
     }
 }

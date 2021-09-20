@@ -1,28 +1,24 @@
 package com.pallav.androidjetpack.model;
 
+import java.util.ArrayList;
+
 public class PersonModel {
-    private String firstname;
-    private String picture;
+    
 
-    public PersonModel(String firstname, String picture) {
-        this.firstname = firstname;
-        this.picture = picture;
+    public ArrayList<PersonObj> data;
+
+    public PersonModel(ArrayList<PersonObj> personlist) {
+        this.data = personlist;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public ArrayList<PersonObj> getPersonlist() {
+        return data;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setPersonlist(ArrayList<PersonObj> personlist) {
+        this.data = personlist;
     }
 
 }
+
+
